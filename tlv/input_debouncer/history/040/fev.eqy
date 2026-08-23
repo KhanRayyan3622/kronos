@@ -1,0 +1,57 @@
+############################################
+# GOLDEN DESIGN
+############################################
+[gold]
+read_verilog -sv -formal feved.sv
+
+############################################
+# UPDATED / GATE DESIGN
+############################################
+[gate]
+read_verilog -sv -formal wip.sv
+
+[script]
+#chparam -set ...
+#prep -top input_debouncer -flatten
+hierarchy -top input_debouncer -check
+flatten
+proc -ifx
+#splitnets -ports
+clean
+setundef -anyseq
+#sim -w -clock clk -reset reset -rstlen 10 -n 10
+
+
+############################################
+# MATCHING / PARTITIONING HINTS
+############################################
+# The below section should be formatted as:
+# [match input_debouncer]
+[match input_debouncer]
+gold-match resetn |default<>0$resetn
+gold-match resetn_meta |default<>0$resetn_meta
+
+[collect *]
+# Grouping enabled (rather than full auto-partitioning) because the growing number of
+# per-instance state elements (gpio[N-1:0] x multiple signals) causes incremental FEV
+# to time out against fev.sh's hardcoded 120s budget when partitioned individually,
+# even though every partition proves. See tracker.md.
+group *
+
+[partition *]
+# It can be useful to group outputs to avoid output cut points if outputs are used internally.
+#name outputs ^o_.*
+
+
+############################################
+# STRATEGIES
+############################################
+# Disabled due to https://github.com/YosysHQ/eqy/issues/83
+#[strategy fast_sat]
+#use sat
+#depth 10
+
+[strategy sby_seq]
+use sby
+depth 20
+engine smtbmc

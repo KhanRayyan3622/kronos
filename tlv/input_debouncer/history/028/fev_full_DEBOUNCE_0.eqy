@@ -1,0 +1,123 @@
+############################################
+# GOLDEN DESIGN
+############################################
+[gold]
+read_verilog -sv -formal prepared.sv
+
+############################################
+# UPDATED / GATE DESIGN
+############################################
+[gate]
+read_verilog -sv -formal wip.sv
+
+[script]
+chparam -set DEBOUNCE 0
+#prep -top input_debouncer -flatten
+hierarchy -top input_debouncer -check
+flatten
+proc -ifx
+#splitnets -ports
+clean
+setundef -anyseq
+#sim -w -clock clk -reset reset -rstlen 10 -n 10
+
+
+############################################
+# MATCHING / PARTITIONING HINTS
+############################################
+# The below section should be formatted as:
+# [match input_debouncer]
+# gold-match <gold_signal> <gate_signal>
+# ...
+# And should be followed by a blank line, marking the end of the section.
+# Gate names may use TL-Verilog pipesignal references, which will be mapped by `fev.sh`.
+[match input_debouncer]
+gold-match timer |default<>0$timer
+gold-match tick |default<>0$tick
+gold-match genblk1[0].sync |default/gpio[0]<>0$sync
+gold-match genblk1[0].raw_val gpio_gen[0].raw_val
+gold-match genblk1[0].line gpio_gen[0].line
+gold-match genblk1[0].poll gpio_gen[0].poll
+gold-match genblk1[1].sync |default/gpio[1]<>0$sync
+gold-match genblk1[1].raw_val gpio_gen[1].raw_val
+gold-match genblk1[1].line gpio_gen[1].line
+gold-match genblk1[1].poll gpio_gen[1].poll
+gold-match genblk1[2].sync |default/gpio[2]<>0$sync
+gold-match genblk1[2].raw_val gpio_gen[2].raw_val
+gold-match genblk1[2].line gpio_gen[2].line
+gold-match genblk1[2].poll gpio_gen[2].poll
+gold-match genblk1[3].sync |default/gpio[3]<>0$sync
+gold-match genblk1[3].raw_val gpio_gen[3].raw_val
+gold-match genblk1[3].line gpio_gen[3].line
+gold-match genblk1[3].poll gpio_gen[3].poll
+gold-match genblk1[4].sync |default/gpio[4]<>0$sync
+gold-match genblk1[4].raw_val gpio_gen[4].raw_val
+gold-match genblk1[4].line gpio_gen[4].line
+gold-match genblk1[4].poll gpio_gen[4].poll
+gold-match genblk1[5].sync |default/gpio[5]<>0$sync
+gold-match genblk1[5].raw_val gpio_gen[5].raw_val
+gold-match genblk1[5].line gpio_gen[5].line
+gold-match genblk1[5].poll gpio_gen[5].poll
+gold-match genblk1[6].sync |default/gpio[6]<>0$sync
+gold-match genblk1[6].raw_val gpio_gen[6].raw_val
+gold-match genblk1[6].line gpio_gen[6].line
+gold-match genblk1[6].poll gpio_gen[6].poll
+gold-match genblk1[7].sync |default/gpio[7]<>0$sync
+gold-match genblk1[7].raw_val gpio_gen[7].raw_val
+gold-match genblk1[7].line gpio_gen[7].line
+gold-match genblk1[7].poll gpio_gen[7].poll
+gold-match genblk1[8].sync |default/gpio[8]<>0$sync
+gold-match genblk1[8].raw_val gpio_gen[8].raw_val
+gold-match genblk1[8].line gpio_gen[8].line
+gold-match genblk1[8].poll gpio_gen[8].poll
+gold-match genblk1[9].sync |default/gpio[9]<>0$sync
+gold-match genblk1[9].raw_val gpio_gen[9].raw_val
+gold-match genblk1[9].line gpio_gen[9].line
+gold-match genblk1[9].poll gpio_gen[9].poll
+gold-match genblk1[10].sync |default/gpio[10]<>0$sync
+gold-match genblk1[10].raw_val gpio_gen[10].raw_val
+gold-match genblk1[10].line gpio_gen[10].line
+gold-match genblk1[10].poll gpio_gen[10].poll
+gold-match genblk1[11].sync |default/gpio[11]<>0$sync
+gold-match genblk1[11].raw_val gpio_gen[11].raw_val
+gold-match genblk1[11].line gpio_gen[11].line
+gold-match genblk1[11].poll gpio_gen[11].poll
+gold-match genblk1[12].sync |default/gpio[12]<>0$sync
+gold-match genblk1[12].raw_val gpio_gen[12].raw_val
+gold-match genblk1[12].line gpio_gen[12].line
+gold-match genblk1[12].poll gpio_gen[12].poll
+gold-match genblk1[13].sync |default/gpio[13]<>0$sync
+gold-match genblk1[13].raw_val gpio_gen[13].raw_val
+gold-match genblk1[13].line gpio_gen[13].line
+gold-match genblk1[13].poll gpio_gen[13].poll
+gold-match genblk1[14].sync |default/gpio[14]<>0$sync
+gold-match genblk1[14].raw_val gpio_gen[14].raw_val
+gold-match genblk1[14].line gpio_gen[14].line
+gold-match genblk1[14].poll gpio_gen[14].poll
+gold-match genblk1[15].sync |default/gpio[15]<>0$sync
+gold-match genblk1[15].raw_val gpio_gen[15].raw_val
+gold-match genblk1[15].line gpio_gen[15].line
+gold-match genblk1[15].poll gpio_gen[15].poll
+
+[collect *]
+# Let EQY partition automatically.
+# If you want to force grouping by register name patterns, you can uncomment:
+# group *
+
+[partition *]
+# It can be useful to group outputs to avoid output cut points if outputs are used internally.
+#name outputs ^o_.*
+
+
+############################################
+# STRATEGIES
+############################################
+# Disabled due to https://github.com/YosysHQ/eqy/issues/83
+#[strategy fast_sat]
+#use sat
+#depth 10
+
+[strategy sby_seq]
+use sby
+depth 20
+engine smtbmc

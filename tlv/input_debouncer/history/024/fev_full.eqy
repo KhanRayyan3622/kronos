@@ -1,0 +1,123 @@
+############################################
+# GOLDEN DESIGN
+############################################
+[gold]
+read_verilog -sv -formal prepared.sv
+
+############################################
+# UPDATED / GATE DESIGN
+############################################
+[gate]
+read_verilog -sv -formal wip.sv
+
+[script]
+#chparam -set ...
+#prep -top input_debouncer -flatten
+hierarchy -top input_debouncer -check
+flatten
+proc -ifx
+#splitnets -ports
+clean
+setundef -anyseq
+#sim -w -clock clk -reset reset -rstlen 10 -n 10
+
+
+############################################
+# MATCHING / PARTITIONING HINTS
+############################################
+# The below section should be formatted as:
+# [match input_debouncer]
+# gold-match <gold_signal> <gate_signal>
+# ...
+# And should be followed by a blank line, marking the end of the section.
+# Gate names may use TL-Verilog pipesignal references, which will be mapped by `fev.sh`.
+[match input_debouncer]
+gold-match timer |default<>0$timer
+gold-match tick |default<>0$tick
+gold-match genblk1[0].sync gpio[0].sync
+gold-match genblk1[0].raw_val gpio[0].raw_val
+gold-match genblk1[0].line gpio[0].line
+gold-match genblk1[0].poll gpio[0].poll
+gold-match genblk1[1].sync gpio[1].sync
+gold-match genblk1[1].raw_val gpio[1].raw_val
+gold-match genblk1[1].line gpio[1].line
+gold-match genblk1[1].poll gpio[1].poll
+gold-match genblk1[2].sync gpio[2].sync
+gold-match genblk1[2].raw_val gpio[2].raw_val
+gold-match genblk1[2].line gpio[2].line
+gold-match genblk1[2].poll gpio[2].poll
+gold-match genblk1[3].sync gpio[3].sync
+gold-match genblk1[3].raw_val gpio[3].raw_val
+gold-match genblk1[3].line gpio[3].line
+gold-match genblk1[3].poll gpio[3].poll
+gold-match genblk1[4].sync gpio[4].sync
+gold-match genblk1[4].raw_val gpio[4].raw_val
+gold-match genblk1[4].line gpio[4].line
+gold-match genblk1[4].poll gpio[4].poll
+gold-match genblk1[5].sync gpio[5].sync
+gold-match genblk1[5].raw_val gpio[5].raw_val
+gold-match genblk1[5].line gpio[5].line
+gold-match genblk1[5].poll gpio[5].poll
+gold-match genblk1[6].sync gpio[6].sync
+gold-match genblk1[6].raw_val gpio[6].raw_val
+gold-match genblk1[6].line gpio[6].line
+gold-match genblk1[6].poll gpio[6].poll
+gold-match genblk1[7].sync gpio[7].sync
+gold-match genblk1[7].raw_val gpio[7].raw_val
+gold-match genblk1[7].line gpio[7].line
+gold-match genblk1[7].poll gpio[7].poll
+gold-match genblk1[8].sync gpio[8].sync
+gold-match genblk1[8].raw_val gpio[8].raw_val
+gold-match genblk1[8].line gpio[8].line
+gold-match genblk1[8].poll gpio[8].poll
+gold-match genblk1[9].sync gpio[9].sync
+gold-match genblk1[9].raw_val gpio[9].raw_val
+gold-match genblk1[9].line gpio[9].line
+gold-match genblk1[9].poll gpio[9].poll
+gold-match genblk1[10].sync gpio[10].sync
+gold-match genblk1[10].raw_val gpio[10].raw_val
+gold-match genblk1[10].line gpio[10].line
+gold-match genblk1[10].poll gpio[10].poll
+gold-match genblk1[11].sync gpio[11].sync
+gold-match genblk1[11].raw_val gpio[11].raw_val
+gold-match genblk1[11].line gpio[11].line
+gold-match genblk1[11].poll gpio[11].poll
+gold-match genblk1[12].sync gpio[12].sync
+gold-match genblk1[12].raw_val gpio[12].raw_val
+gold-match genblk1[12].line gpio[12].line
+gold-match genblk1[12].poll gpio[12].poll
+gold-match genblk1[13].sync gpio[13].sync
+gold-match genblk1[13].raw_val gpio[13].raw_val
+gold-match genblk1[13].line gpio[13].line
+gold-match genblk1[13].poll gpio[13].poll
+gold-match genblk1[14].sync gpio[14].sync
+gold-match genblk1[14].raw_val gpio[14].raw_val
+gold-match genblk1[14].line gpio[14].line
+gold-match genblk1[14].poll gpio[14].poll
+gold-match genblk1[15].sync gpio[15].sync
+gold-match genblk1[15].raw_val gpio[15].raw_val
+gold-match genblk1[15].line gpio[15].line
+gold-match genblk1[15].poll gpio[15].poll
+
+[collect *]
+# Let EQY partition automatically.
+# If you want to force grouping by register name patterns, you can uncomment:
+# group *
+
+[partition *]
+# It can be useful to group outputs to avoid output cut points if outputs are used internally.
+#name outputs ^o_.*
+
+
+############################################
+# STRATEGIES
+############################################
+# Disabled due to https://github.com/YosysHQ/eqy/issues/83
+#[strategy fast_sat]
+#use sat
+#depth 10
+
+[strategy sby_seq]
+use sby
+depth 20
+engine smtbmc

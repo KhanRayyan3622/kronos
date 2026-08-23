@@ -1,0 +1,123 @@
+############################################
+# GOLDEN DESIGN
+############################################
+[gold]
+read_verilog -sv -formal prepared.sv
+
+############################################
+# UPDATED / GATE DESIGN
+############################################
+[gate]
+read_verilog -sv -formal wip.sv
+
+[script]
+#chparam -set ...
+#prep -top input_debouncer -flatten
+hierarchy -top input_debouncer -check
+flatten
+proc -ifx
+#splitnets -ports
+clean
+setundef -anyseq
+#sim -w -clock clk -reset reset -rstlen 10 -n 10
+
+
+############################################
+# MATCHING / PARTITIONING HINTS
+############################################
+# The below section should be formatted as:
+# [match input_debouncer]
+# gold-match <gold_signal> <gate_signal>
+# ...
+# And should be followed by a blank line, marking the end of the section.
+# Gate names may use TL-Verilog pipesignal references, which will be mapped by `fev.sh`.
+[match input_debouncer]
+gold-match timer timer
+gold-match tick tick
+gold-match genblk1[0].sync genblk1[0].sync
+gold-match genblk1[0].raw_val genblk1[0].raw_val
+gold-match genblk1[0].line genblk1[0].line
+gold-match genblk1[0].poll genblk1[0].poll
+gold-match genblk1[1].sync genblk1[1].sync
+gold-match genblk1[1].raw_val genblk1[1].raw_val
+gold-match genblk1[1].line genblk1[1].line
+gold-match genblk1[1].poll genblk1[1].poll
+gold-match genblk1[2].sync genblk1[2].sync
+gold-match genblk1[2].raw_val genblk1[2].raw_val
+gold-match genblk1[2].line genblk1[2].line
+gold-match genblk1[2].poll genblk1[2].poll
+gold-match genblk1[3].sync genblk1[3].sync
+gold-match genblk1[3].raw_val genblk1[3].raw_val
+gold-match genblk1[3].line genblk1[3].line
+gold-match genblk1[3].poll genblk1[3].poll
+gold-match genblk1[4].sync genblk1[4].sync
+gold-match genblk1[4].raw_val genblk1[4].raw_val
+gold-match genblk1[4].line genblk1[4].line
+gold-match genblk1[4].poll genblk1[4].poll
+gold-match genblk1[5].sync genblk1[5].sync
+gold-match genblk1[5].raw_val genblk1[5].raw_val
+gold-match genblk1[5].line genblk1[5].line
+gold-match genblk1[5].poll genblk1[5].poll
+gold-match genblk1[6].sync genblk1[6].sync
+gold-match genblk1[6].raw_val genblk1[6].raw_val
+gold-match genblk1[6].line genblk1[6].line
+gold-match genblk1[6].poll genblk1[6].poll
+gold-match genblk1[7].sync genblk1[7].sync
+gold-match genblk1[7].raw_val genblk1[7].raw_val
+gold-match genblk1[7].line genblk1[7].line
+gold-match genblk1[7].poll genblk1[7].poll
+gold-match genblk1[8].sync genblk1[8].sync
+gold-match genblk1[8].raw_val genblk1[8].raw_val
+gold-match genblk1[8].line genblk1[8].line
+gold-match genblk1[8].poll genblk1[8].poll
+gold-match genblk1[9].sync genblk1[9].sync
+gold-match genblk1[9].raw_val genblk1[9].raw_val
+gold-match genblk1[9].line genblk1[9].line
+gold-match genblk1[9].poll genblk1[9].poll
+gold-match genblk1[10].sync genblk1[10].sync
+gold-match genblk1[10].raw_val genblk1[10].raw_val
+gold-match genblk1[10].line genblk1[10].line
+gold-match genblk1[10].poll genblk1[10].poll
+gold-match genblk1[11].sync genblk1[11].sync
+gold-match genblk1[11].raw_val genblk1[11].raw_val
+gold-match genblk1[11].line genblk1[11].line
+gold-match genblk1[11].poll genblk1[11].poll
+gold-match genblk1[12].sync genblk1[12].sync
+gold-match genblk1[12].raw_val genblk1[12].raw_val
+gold-match genblk1[12].line genblk1[12].line
+gold-match genblk1[12].poll genblk1[12].poll
+gold-match genblk1[13].sync genblk1[13].sync
+gold-match genblk1[13].raw_val genblk1[13].raw_val
+gold-match genblk1[13].line genblk1[13].line
+gold-match genblk1[13].poll genblk1[13].poll
+gold-match genblk1[14].sync genblk1[14].sync
+gold-match genblk1[14].raw_val genblk1[14].raw_val
+gold-match genblk1[14].line genblk1[14].line
+gold-match genblk1[14].poll genblk1[14].poll
+gold-match genblk1[15].sync genblk1[15].sync
+gold-match genblk1[15].raw_val genblk1[15].raw_val
+gold-match genblk1[15].line genblk1[15].line
+gold-match genblk1[15].poll genblk1[15].poll
+
+[collect *]
+# Let EQY partition automatically.
+# If you want to force grouping by register name patterns, you can uncomment:
+# group *
+
+[partition *]
+# It can be useful to group outputs to avoid output cut points if outputs are used internally.
+#name outputs ^o_.*
+
+
+############################################
+# STRATEGIES
+############################################
+# Disabled due to https://github.com/YosysHQ/eqy/issues/83
+#[strategy fast_sat]
+#use sat
+#depth 10
+
+[strategy sby_seq]
+use sby
+depth 20
+engine smtbmc
