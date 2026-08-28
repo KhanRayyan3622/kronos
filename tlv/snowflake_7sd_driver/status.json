@@ -1,0 +1,5 @@
+{
+  "task": "Prepare Tracker for Handoff",
+  "fev.sh": "pending — structural limitation identified",
+  "llm": "Attempted partial conversion. Timer fully convertible to TLV, but display mux has async reset AND depends on tick signal from TLV region. SV_plus cannot reference TLV pipesignals, so the two regions cannot be cleanly separated. This is a genuine Class C structural blocker."
+}
