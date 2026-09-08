@@ -1,34 +1,9 @@
 \m5_TLV_version 1d: tl-x.org
 \m5
 use(m5-1.0)
-
-// The guts of module snowflake_7sd_driver.
-\TLV snowflake_7sd_driver(/_top)
-   |default
-      @0
-         // Internal positively-asserted reset, derived from the negatively-asserted,
-         // synchronous reset input rstz.
-         $reset = ~ $rstz;
-         // timer
-         <<1$timer[15 : 0] = $timer + 1'b1;
-         <<1$rollover = $timer[15];
-
-         // 2.7ms = 2**16 * (1/24MHz)
-         $tick = $rollover & ~ $timer[15];
-
-         // display output mux
-         <<1$sel = ($reset || ~ $en) ? 1'b0 :
-                    $tick             ? ~ $sel :
-                                         $sel;
-         <<1$disp[6 : 0] = ($reset || ~ $en) ? '1 :          // anode, blanks display
-                            $tick             ? ($sel ? $bb : $aa) :
-                                                 $disp;
-
 \SV
 // Copyright (c) 2020 Sonal Pinto
 // SPDX-License-Identifier: Apache-2.0
-//
-// Converted to TL-Verilog by Claude.
 
 /*
 Controller for 1BitSquared 7 Segment Display PMOD
@@ -73,17 +48,33 @@ module snowflake_7sd_driver (
     output logic        sel
 );
 \TLV
-   // Connect Verilog inputs:
    |default
       @0
+         // Connect Verilog inputs:
          $rstz = *rstz;
          $en = *en;
          $aa[6 : 0] = *a;
          $bb[6 : 0] = *b;
-   m5+snowflake_7sd_driver(/top)
-   // Connect Verilog outputs:
-   |default
-      @0
+
+         // Internal positively-asserted reset, derived from the negatively-asserted,
+         // synchronous reset input rstz.
+         $reset = ~ $rstz;
+         // timer
+         <<1$timer[15 : 0] = $timer + 1'b1;
+         <<1$rollover = $timer[15];
+
+         // 2.7ms = 2**16 * (1/24MHz)
+         $tick = $rollover & ~ $timer[15];
+
+         // display output mux
+         <<1$sel = ($reset || ~ $en) ? 1'b0 :
+                    $tick             ? ~ $sel :
+                                         $sel;
+         <<1$disp[6 : 0] = ($reset || ~ $en) ? '1 :          // anode, blanks display
+                            $tick             ? ($sel ? $bb : $aa) :
+                                                 $disp;
+
+         // Connect Verilog outputs:
          *sel = $sel;
          *disp = $disp;
 \SV

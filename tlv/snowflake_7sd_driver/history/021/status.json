@@ -1,0 +1,6 @@
+{
+  "task": "Signal Assignments to TLV Pipesignal Assignments",
+  "fev.sh": "0: All FEV runs successful! History updated.",
+  "fev_cnt": 0,
+  "llm": "In progress, converting top to bottom. Converted 'reset' to pipesignal $reset (= ~*rstz), added gold-match for it in fev.eqy (reset has no gold counterpart in prepared.sv, so no fev_full.eqy match needed there -- benign WARNING from fev.sh about this was expected). fev.sh passed. YOU ARE HERE marker is before the timer/rollover always_ff block; still to convert: timer, rollover, tick, sel, disp, and output connections for sel/disp."
+}

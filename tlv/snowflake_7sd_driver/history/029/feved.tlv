@@ -27,8 +27,6 @@ use(m5-1.0)
 \SV
 // Copyright (c) 2020 Sonal Pinto
 // SPDX-License-Identifier: Apache-2.0
-//
-// Converted to TL-Verilog by Claude.
 
 /*
 Controller for 1BitSquared 7 Segment Display PMOD

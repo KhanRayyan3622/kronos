@@ -1,0 +1,6 @@
+{
+    "task": "Parameters",
+    "fev.sh": "none",
+    "fev_cnt": 0,
+    "llm": "No parameters or tick-defines in this module. No fev_full_*.eqy alternates needed. No wip.tlv changes made, so fev.sh not re-run for this task (nothing to checkpoint beyond history/003)."
+}
